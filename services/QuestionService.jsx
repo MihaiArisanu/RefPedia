@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 // Configurarea OpenAI API
 const openai = new OpenAI({
-  apiKey: "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",
+  apiKey: process.env.OPENAI_API_KEY || '',
 });
 
 // Funcția care generează o întrebare despre regulamentul FIBA
