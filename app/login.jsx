@@ -2,21 +2,22 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import React, { useRef, useState } from 'react';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { StatusBar } from 'expo-status-bar';
-import BackButton from '../components/BackButton';
 import { hp, wp } from '../constants/common';
 import { theme } from '../constants/theme';
 import Input from '../components/Input';
 import Icon from '../assets/icons';
 import ButtonC from '../components/ButtonC';
 import { useRouter } from 'expo-router';
-import { supabase } from '../lib/supabase';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import app from '../lib/firebase'; 
 
 const Login = () => {
     const router = useRouter();
     const emailRef = useRef();
     const passwordRef = useRef();
     const [loading, setLoading] = useState(false);
-    
+    const [showPassword, setShowPassword] = useState(false);
+
     const onSubmit = async () => {
         if (!emailRef.current || !passwordRef.current) {
             Alert.alert('Login', 'Please fill all the fields!');
@@ -27,19 +28,17 @@ const Login = () => {
         let password = passwordRef.current.trim();
 
         setLoading(true);
+
+        const auth = getAuth(app);
         
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-
-        setLoading(false);
-
-        if (error) {
-            Alert.alert('Error', error.message);
-        } else {
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            setLoading(false);
             Alert.alert('Success', 'You are logged in!');
-            router.push('home'); // Redirecționează utilizatorul spre ecranul "home"
+            router.push('home');
+        } catch (error) {
+            setLoading(false);
+            Alert.alert('Error', error.message);
         }
     };
 
@@ -48,37 +47,44 @@ const Login = () => {
             <StatusBar style="dark" />
             <View style={styles.container}>
 
-                {/* Welcome */}
                 <View>
                     <Text style={styles.welcomeText}>Hey,</Text>
                     <Text style={styles.welcomeText}>Welcome Back</Text>
                 </View>
 
-                {/* Form */}
                 <View style={styles.form}>
                     <Text style={{ fontSize: hp(1.5), color: theme.colors.text }}>
                         Please login to continue
                     </Text>
+                    
                     <Input
                         icon={<Icon name="mail" size={26} strokeWidth={1.6} />}
                         placeholder="Enter your email"
                         onChangeText={(value) => (emailRef.current = value)}
                     />
-                    <Input
-                        icon={<Icon name="lock" size={26} strokeWidth={1.6} />}
-                        placeholder="Enter your password"
-                        secureTextEntry
-                        onChangeText={(value) => (passwordRef.current = value)}
-                    />
+                    
+                    <View style={{ position: 'relative' }}>
+                        <Input
+                            icon={<Icon name="lock" size={26} strokeWidth={1.6} />}
+                            placeholder="Enter your password"
+                            secureTextEntry={!showPassword}
+                            onChangeText={(value) => (passwordRef.current = value)}
+                        />
+                        <Pressable
+                            onPress={() => setShowPassword(!showPassword)}
+                            style={styles.showPasswordIcon}
+                        >
+                            <Icon name="show" size={26} strokeWidth={1.6} />
+                        </Pressable>
+                    </View>
+
                     <Pressable onPress={() => router.push('forgot')}>
                         <Text style={styles.forgotPassword}>Forgot password?</Text>
                     </Pressable>
 
-                    {/* Login Button */}
                     <ButtonC title={'Login'} loading={loading} onPress={onSubmit} />
                 </View>
 
-                {/* Footer */}
                 <View style={styles.footer}>
                     <Text style={styles.footerText}>
                         Don't have an account?
@@ -114,6 +120,12 @@ const styles = StyleSheet.create({
     },
     form: {
         gap: 25,
+    },
+    showPasswordIcon: {
+        position: 'absolute',
+        right: 10,
+        top: '50%',
+        transform: [{ translateY: -13 }],
     },
     forgotPassword: {
         textAlign: 'right',

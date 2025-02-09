@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "395377408799",
+    "firebase_url": "https://refpediadb-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "refpediadb",
+    "storage_bucket": "refpediadb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395377408799:android:c9ca25fd1fc5b604018e2a",
+        "android_client_info": {
+          "package_name": "com.MihaiArisanu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBb8PKQtpgNATOACB0GOy_eiP7rby-rvF0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

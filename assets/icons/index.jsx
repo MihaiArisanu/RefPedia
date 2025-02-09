@@ -3,7 +3,6 @@ import Home from './Home';
 import Mail from './Mail';
 import Lock from './Lock';
 import User from './User';
-import Heart from './Heart';
 import Plus from './Plus';
 import Search from './Search';
 import Location from './Location';
@@ -19,13 +18,15 @@ import Image from './Image';
 import Video from './Video';
 import Show from './Show'
 import Fullscreen from './Fullscreen';
+import Filter from './Filter';
+import Redo from './Redo';
+import Help from './Help';
 
 const icons = {
     home: Home,
     mail: Mail,
     lock: Lock,
     user: User,
-    heart: Heart,
     plus: Plus,
     search: Search,
     location: Location,
@@ -40,6 +41,9 @@ const icons = {
     notification: Notification,
     show: Show,
     fullscreen: Fullscreen,
+    filter: Filter,
+    redo: Redo,
+    help: Help,
 }
 
 const Icon = ({ name, ...props }) => {

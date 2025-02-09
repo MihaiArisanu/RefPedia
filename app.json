@@ -1,19 +1,25 @@
 {
   "expo": {
-    "name": "LinkUp",
-    "slug": "LinkUp",
+    "name": "RefPedia",
+    "slug": "RefPedia",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "We need access to your camera to take photos."
+      }
     },
     "android": {
+      "googleServicesFile": "google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": ["CAMERA"]
     },
     "web": {
       "bundler": "metro",
@@ -29,7 +35,8 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-video"
+      "expo-video",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

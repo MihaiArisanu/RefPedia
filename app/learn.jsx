@@ -20,17 +20,16 @@ const Learn = () => {
       <BackButton />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {videoSources.map((video, index) => {
-          const player = useVideoPlayer(video.url); // Fără redare automată
+          const player = useVideoPlayer(video.url);
 
           return (
             <View key={index} style={styles.videoContainer}>
               <Text style={styles.videoTitle}>{video.title}</Text>
 
-              {/* Adăugare useNativeControls */}
               <VideoView
                 player={player}
                 style={styles.video}
-                useNativeControls={true} // Activează controalele native
+                useNativeControls={true}
               />
             </View>
           );
@@ -49,10 +48,10 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 10,
-    flexGrow: 1, // Permite scrollul vertical
+    flexGrow: 1,
   },
   videoContainer: {
-    width: '100%', // Ocupă întreaga lățime a ecranului
+    width: '100%',
     marginBottom: 20,
   },
   videoTitle: {
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   video: {
-    width: '100%', // Lățime completă
-    height: 200, // Înălțime suficientă pentru videoclip
+    width: '100%',
+    height: 200,
   },
 });

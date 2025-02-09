@@ -9,7 +9,8 @@ import Input from '../components/Input';
 import Icon from '../assets/icons';
 import ButtonC from '../components/ButtonC';
 import { useRouter } from 'expo-router';
-import { supabase } from '../lib/supabase';
+import { auth } from '../lib/firebase';
+import { sendPasswordResetEmail } from 'firebase/auth';
 
 const ForgotPassword = () => {
     const router = useRouter();
@@ -26,18 +27,18 @@ const ForgotPassword = () => {
 
         setLoading(true);
 
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        try {
+            await sendPasswordResetEmail(auth, email);
+            setLoading(false);
 
-        setLoading(false);
-
-        if (error) {
-            Alert.alert('Error', error.message);
-        } else {
             Alert.alert(
                 'Success',
                 'If this email is registered, you will receive a password reset link shortly.'
             );
             router.push('login');
+        } catch (error) {
+            setLoading(false);
+            Alert.alert('Error', error.message); 
         }
     };
 

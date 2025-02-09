@@ -1,19 +1,19 @@
-import { supabase } from '../lib/supabase';
+import { db } from '../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export const getUserData = async (userId) => {
     try {
-        const { data, error } = await supabase
-        .from('users')
-        .select()
-        .eq('id', userId)
-        .single();
+        const userDocRef = doc(db, 'users', userId);
+        
+        const userDoc = await getDoc(userDocRef);
 
-        if (error) {
-            return  {succes: false, msg: error?.message};
+        if (!userDoc.exists()) {
+            return { succes: false, msg: 'User not found' };
         }
-        return {succes: true, data}
+
+        return { succes: true, data: userDoc.data() };
     } catch (error) {
-        console.log('got error', error);
-        return {succes: false, msg: error?.message};
+        console.log('Got error:', error);
+        return { succes: false, msg: error.message };
     }
-}
+};

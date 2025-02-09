@@ -6,16 +6,17 @@ import { hp, wp } from '../constants/common';
 import ButtonC from '../components/ButtonC';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { useRouter } from 'expo-router';
-import { supabase } from '../lib/supabase';
+import { auth } from '../lib/firebase';
+import { signOut } from 'firebase/auth';
 
 const Welcome = () => {
     const router = useRouter();
 
     const continueAsGuest = async () => {
-        await supabase.auth.signOut(); // Asigură-te că utilizatorul nu este logat.
+        await signOut(auth);
         router.push({
             pathname: 'home',
-            params: { guest: 'true' }, // Transmitem parametrul guest ca string.
+            params: { guest: 'true' },
         });
     };
 

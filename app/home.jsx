@@ -8,11 +8,10 @@ import { theme } from '../constants/theme';
 
 const Home = ({ guest = false }) => {
   const router = useRouter();
-  const params = useLocalSearchParams(); // Accesăm parametrii din router
-  const [notifications, setNotifications] = useState([]); // Inbox-ul gol inițial
+  const params = useLocalSearchParams();
+  const [notifications, setNotifications] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Determinăm dacă utilizatorul este guest din parametrii URL-ului
   const isGuest = guest || params.guest === 'true';
 
   const toggleModal = () => {
@@ -23,26 +22,23 @@ const Home = ({ guest = false }) => {
     <ScreenWrapper>
       <View style={styles.container}>
         <View style={styles.iconContainer}>
-          {/* Icon-ul de notificări */}
           <Pressable onPress={toggleModal} style={styles.icon}>
             <Icon name="notification" size={30} color={theme.colors.dark} />
           </Pressable>
 
-          {/* Icon-ul de profil */}
           <Pressable onPress={() => router.push({ pathname: 'profile', params: { guest: isGuest } })} style={styles.icon}>
             <Icon name="user" size={30} color={theme.colors.dark} />
           </Pressable>
         </View>
 
-        {/* Butoanele din Home */}
         <View style={styles.buttonContainer}>
           <CircleButton title="Learn" onPress={() => router.push('learn')} />
-          <CircleButton title="Practice Hand Signals" onPress={() => router.push('practice')} />
+          <CircleButton title="Recogise Hands Signal" onPress={() => router.push('testHands')} />
+          <CircleButton title="Practice Hands Signals" onPress={() => router.push('practice')} />
           <CircleButton title="Video Test" onPress={() => router.push('video')} />
           <CircleButton title="Theoretical Test" onPress={() => router.push('theoretical')} />
         </View>
 
-        {/* Modal pentru notificări */}
         <Modal visible={modalVisible} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
