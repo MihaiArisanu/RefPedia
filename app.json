@@ -36,7 +36,14 @@
         }
       ],
       "expo-video",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow RefPedia to access your camera",
+          "microphonePermission": "Allow RefPedia to access your microphone"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

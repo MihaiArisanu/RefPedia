@@ -7,6 +7,7 @@ import Input from '../components/Input';
 import ButtonC from '../components/ButtonC';
 import { theme } from '../constants/theme';
 import levenshtein from 'fast-levenshtein';
+import Icon from '../assets/icons';
 
 const Learn = () => {
   const [userAnswer, setUserAnswer] = useState('');
