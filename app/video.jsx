@@ -8,6 +8,7 @@ import ButtonC from '../components/ButtonC';
 import { theme } from '../constants/theme';
 import levenshtein from 'fast-levenshtein';
 import Icon from '../assets/icons';
+import { hp, wp } from '../constants/common';
 
 const Learn = () => {
   const [userAnswer, setUserAnswer] = useState('');
@@ -215,29 +216,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 10
+    paddingHorizontal: wp(5),
+    paddingTop: hp(1.25)
   },
   filterContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: hp(1.25),
     flexWrap: 'wrap'
   },
   filterButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 20,
+    paddingVertical: hp(1.25),
+    paddingHorizontal: wp(3.75),
+    borderRadius: wp(5),
     backgroundColor: '#E0E0E0',
-    marginHorizontal: 5,
-    marginVertical: 5
+    marginHorizontal: wp(1.25),
+    marginVertical: hp(1.25)
   },
   activeFilter: {
     backgroundColor: theme.colors.primary
   },
   filterText: {
-    fontSize: 14,
+    fontSize: wp(3.5),
     fontWeight: 'bold',
     color: '#000'
   },
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF'
   },
   scrollContainer: {
-    padding: 10,
+    padding: wp(2.5),
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center'
@@ -254,66 +255,66 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20
+    marginBottom: hp(2.5)
   },
   video: {
-    width: '90%',
-    height: 250
+    width: wp(90),
+    height: hp(31.25)
   },
   inputContainer: {
-    width: '90%',
+    width: wp(90),
     alignItems: 'center',
     justifyContent: 'center'
   },
   buttonContainer: {
-    marginTop: 10,
+    marginTop: hp(1.25),
     width: '100%'
   },
   checkButton: {
     backgroundColor: theme.colors.primary,
-    paddingVertical: 10,
-    borderRadius: 10,
+    paddingVertical: hp(1.25),
+    borderRadius: wp(2.5),
     alignItems: 'center'
   },
   typoErrorContainer: {
     backgroundColor: 'yellow',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-    width: '90%',
+    padding: hp(1.25),
+    borderRadius: wp(1.25),
+    marginBottom: hp(1.875),
+    width: wp(90),
     alignItems: 'center',
   },
   typoErrorText: {
-    fontSize: 16,
+    fontSize: wp(4),
     color: '#000',
     fontWeight: 'bold',
   },
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
-    width: '90%',
+    marginBottom: hp(1.875),
+    width: wp(90),
     justifyContent: 'center'
   },
   errorText: {
     color: 'red', 
-    fontSize: 16,
+    fontSize: wp(4),
     fontWeight: 'bold',
-    marginRight: 10
+    marginRight: wp(2.5)
   },
   icon: {
-    marginHorizontal: 5
+    marginHorizontal: wp(1.25)
   },
   correctAnswerContainer: {
     backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-    width: '90%',
+    padding: hp(1.25),
+    borderRadius: wp(1.25),
+    marginBottom: hp(1.875),
+    width: wp(90),
     alignItems: 'center',
   },
   correctAnswerText: {
-    fontSize: 16,
+    fontSize: wp(4),
     color: '#FFF',
     fontWeight: 'bold',
   },

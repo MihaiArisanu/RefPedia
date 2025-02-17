@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Alert } fr
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackButton from '../components/BackButton';
 import { theme } from '../constants/theme';
+import { hp, wp } from '../constants/common';
 
 const image1 = require('../assets/images/testImg/1.jpg');
 const image2 = require('../assets/images/testImg/2.jpg');
@@ -42,7 +43,7 @@ const TestHands = () => {
   const [isTestFinished, setIsTestFinished] = useState(false);
 
   useEffect(() => {
-    setQuestions(shuffleArray([...initialQuestions])); // Amestecăm întrebările la început
+    setQuestions(shuffleArray([...initialQuestions]));
   }, []);
 
   useEffect(() => {
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: wp(5),
   },
   container: {
     alignItems: 'center',
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: wp(5),
   },
   loadingScreen: {
     flex: 1,
@@ -175,68 +176,68 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    fontSize: 22,
+    fontSize: wp(5.5),
     fontWeight: 'bold',
     color: theme.colors.primary,
   },
   questionText: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: wp(6),
+    marginBottom: hp(2.5),
     fontWeight: 'bold',
     textAlign: 'center',
   },
   answerText: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: wp(4.5),
+    marginBottom: hp(1.25),
   },
   image: {
-    width: 380,
-    height: 420,
+    width: wp(95),
+    height: hp(52.5),
     resizeMode: 'contain',
-    marginBottom: 20,
+    marginBottom: hp(2.5),
   },
   errorText: {
-    fontSize: 18,
+    fontSize: wp(4.5),
     color: 'red',
-    marginBottom: 20,
+    marginBottom: hp(2.5),
   },
   optionsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 10,
+    gap: wp(2.5),
     width: '80%',
   },
   optionButton: {
     width: '45%',
-    height: 75,
+    height: hp(9.375),
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: hp(1.25),
     borderRadius: 10,
   },
   optionText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: wp(4.5),
     fontWeight: 'bold',
     textAlign: 'center',
   },
   congratsText: {
-    fontSize: 28,
+    fontSize: wp(7),
     fontWeight: 'bold',
     color: theme.colors.primary,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: hp(2.5),
   },
   restartButton: {
     backgroundColor: theme.colors.primary,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
+    paddingVertical: hp(3.75),
+    paddingHorizontal: wp(7.5),
     borderRadius: 10,
   },
   restartText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: wp(4.5),
     fontWeight: 'bold',
     textAlign: 'center',
   },

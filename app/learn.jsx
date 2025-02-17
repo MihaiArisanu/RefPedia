@@ -3,9 +3,9 @@ import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackButton from '../components/BackButton';
 import { VideoView, useVideoPlayer } from 'expo-video';
+import { hp, wp } from '../constants/common';
 
 const Learn = () => {
-  // Surse video pentru cele 10 lecții
   const videoSources = [
     { title: "Lesson 1", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
     { title: "Lesson 2", url: require('../assets/video/videoTalent.mp4') },
@@ -47,22 +47,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContainer: {
-    padding: 10,
+    padding: wp(2.5),
     flexGrow: 1,
   },
   videoContainer: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: hp(2.5),
   },
   videoTitle: {
-    fontSize: 16,
+    fontSize: wp(4),
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: hp(1.25),
     textAlign: 'center',
     color: '#000',
   },
   video: {
     width: '100%',
-    height: 200,
+    height: hp(25),
   },
 });

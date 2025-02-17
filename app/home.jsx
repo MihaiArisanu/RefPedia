@@ -5,6 +5,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import CircleButton from '../components/CircleButton';
 import Icon from '../assets/icons';
 import { theme } from '../constants/theme';
+import { hp, wp } from '../constants/common';
 
 const Home = ({ guest = false }) => {
   const router = useRouter();
@@ -23,11 +24,11 @@ const Home = ({ guest = false }) => {
       <View style={styles.container}>
         <View style={styles.iconContainer}>
           <Pressable onPress={toggleModal} style={styles.icon}>
-            <Icon name="notification" size={30} color={theme.colors.dark} />
+            <Icon name="notification" size={wp(7.5)} color={theme.colors.dark} />
           </Pressable>
 
           <Pressable onPress={() => router.push({ pathname: 'profile', params: { guest: isGuest } })} style={styles.icon}>
-            <Icon name="user" size={30} color={theme.colors.dark} />
+            <Icon name="user" size={wp(7.5)} color={theme.colors.dark} />
           </Pressable>
         </View>
 
@@ -68,24 +69,24 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: wp(5),
     position: 'relative',
   },
   iconContainer: {
     position: 'absolute',
-    top: 20,
-    right: 20,
+    top: hp(2.5),
+    right: wp(5),
     flexDirection: 'row',
     zIndex: 10,
   },
   icon: {
-    marginLeft: 10,
+    marginLeft: wp(2.5),
   },
   buttonContainer: {
     flex: 1,
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    paddingTop: 60,
+    paddingTop: hp(7.5),
   },
   modalContainer: {
     flex: 1,
@@ -95,32 +96,32 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    padding: 20,
+    padding: wp(5),
     borderRadius: theme.radius.md,
-    width: '80%',
+    width: wp(80),
     alignItems: 'center',
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: wp(5),
     fontWeight: theme.fonts.medium,
-    marginBottom: 10,
+    marginBottom: hp(1.25),
   },
   notificationText: {
-    fontSize: 16,
-    marginBottom: 5,
+    fontSize: wp(4),
+    marginBottom: hp(0.625),
     color: theme.colors.text,
     fontWeight: theme.fonts.medium,
   },
   closeButton: {
-    marginTop: 20,
+    marginTop: hp(2.5),
     backgroundColor: theme.colors.primary,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: hp(1.25),
+    paddingHorizontal: wp(5),
     borderRadius: theme.radius.md,
   },
   closeButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: wp(4),
     fontWeight: theme.fonts.bold,
   },
 });

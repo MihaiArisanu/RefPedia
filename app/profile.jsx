@@ -9,6 +9,7 @@ import Input from '../components/Input';
 import ButtonC from '../components/ButtonC';
 import { auth } from '../lib/firebase';
 import { updateEmail, updatePassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { hp, wp } from '../constants/common';
 
 const Profile = () => {
     const router = useRouter();
@@ -157,35 +158,35 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
+        paddingHorizontal: wp(5),
+        paddingVertical: hp(1.25),
     },
     iconWrapper: {
-        padding: 5,
+        padding: wp(1.25),
         borderRadius: theme.radius.sm,
     },
     container: {
         flex: 1,
         justifyContent: 'flex-start',
-        paddingHorizontal: 20,
+        paddingHorizontal: wp(5),
     },
     text: {
-        fontSize: 18,
+        fontSize: wp(4.5),
         textAlign: 'center',
         color: theme.colors.text,
     },
     form: {
         width: '100%',
-        gap: 15,
-        marginTop: 10,
-        paddingHorizontal: 20,
+        gap: hp(1.875),
+        marginTop: hp(1.25),
+        paddingHorizontal: wp(5),
     },
     button: {
-        height: 40,
+        height: hp(5),
         alignSelf: 'flex-start',
     },
     welcomeText: {
-        fontSize: 24,
+        fontSize: wp(6),
         fontWeight: theme.fonts.bold,
         color: theme.colors.text,
         textAlign: 'center',
@@ -193,12 +194,12 @@ const styles = StyleSheet.create({
     footerText: {
         textAlign: 'center',
         color: theme.colors.text,
-        fontSize: 18,
+        fontSize: wp(4.5),
     },
     showPasswordIcon: {
         position: 'absolute',
-        right: 10,
+        right: wp(2.5),
         top: '50%',
-        transform: [{ translateY: -13 }], // Centrare în câmpul de input
+        transform: [{ translateY: -13 }],
     },
 });
