@@ -7,12 +7,9 @@ import { hp, wp } from '../constants/common';
 
 const Learn = () => {
   const videoSources = [
-    { title: "Lesson 1", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
-    { title: "Lesson 2", url: require('../assets/video/videoTalent.mp4') },
-    { title: "Lesson 3", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
-    { title: "Lesson 4", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
-    { title: "Lesson 5", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
-    { title: "Lesson 6", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+    { title: "Lesson 1", url: require('../assets/video/l1.mp4') },
+    { title: "Lesson 2", url: require('../assets/video/l2.mp4') },
+    { title: "Lesson 3", url: require('../assets/video/l3.mp4') },
   ];
 
   return (
