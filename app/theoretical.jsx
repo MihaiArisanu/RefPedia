@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, Pressable } from 'react-native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackButton from '../components/BackButton';
+import Icon from '../assets/icons';
 import ButtonC from '../components/ButtonC';
-import { db } from '../lib/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { db, auth } from '../lib/firebase';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { theme } from '../constants/theme';
 import { hp, wp } from '../constants/common';
 
@@ -21,15 +22,33 @@ const Theoretical = () => {
   const [isFinished, setIsFinished] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeExpired, setTimeExpired] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newQuestion, setNewQuestion] = useState('');
+  const [newAnswer, setNewAnswer] = useState('');
+
+  const fetchData = async () => {
+    const docs = await getDocs(collection(db, 'enunturi'));
+    let fetchedQuestions = docs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    fetchedQuestions = shuffleArray(fetchedQuestions);
+    setQuestions(fetchedQuestions);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const docs = await getDocs(collection(db, 'enunturi'));
-      let fetchedQuestions = docs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      fetchedQuestions = shuffleArray(fetchedQuestions);
-      setQuestions(fetchedQuestions);
-    };
     fetchData().catch(console.error);
+
+    const checkRole = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      const snap = await getDocs(collection(db, 'users'));
+      snap.forEach((doc) => {
+        if (doc.id === user.uid && doc.data().role === 'admin') {
+          setIsAdmin(true);
+        }
+      });
+    };
+
+    checkRole();
   }, []);
 
   useEffect(() => {
@@ -46,15 +65,15 @@ const Theoretical = () => {
 
   const handleAnswer = (userAnswer) => {
     if (questions.length === 0 || isFinished || selectedAnswer !== null) return;
-  
+
     const currentQuestion = questions[currentIndex];
-  
+
     setSelectedAnswer(userAnswer);
-  
+
     if (userAnswer === currentQuestion.raspuns) {
       setScore(prevScore => prevScore + 1);
     }
-  
+
     setTimeout(() => {
       if (currentIndex < questions.length - 1) {
         setCurrentIndex(currentIndex + 1);
@@ -77,10 +96,52 @@ const Theoretical = () => {
     }
   };
 
+  const handleAddQuestion = async () => {
+    if (!newQuestion.trim() || !newAnswer.trim()) return;
+    try {
+      await addDoc(collection(db, 'enunturi'), {
+        enunt: newQuestion.trim(),
+        raspuns: newAnswer === 'true'
+      });
+      setNewQuestion('');
+      setNewAnswer('');
+      setShowAddForm(false);
+      await fetchData();
+    } catch (err) {
+      console.error('Error adding question:', err);
+    }
+  };
+
   if (!mode) {
     return (
       <ScreenWrapper>
-        <BackButton />
+        <View style={styles.headerRow}>
+          <BackButton />
+          {isAdmin && (
+            <Pressable onPress={() => setShowAddForm(!showAddForm)}>
+              <Icon name="plus" size={24} color={theme.colors.primary} />
+            </Pressable>
+          )}
+        </View>
+
+        {showAddForm && (
+          <View style={styles.addForm}>
+            <TextInput
+              style={styles.input}
+              placeholder="Question"
+              value={newQuestion}
+              onChangeText={setNewQuestion}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Answer (true/false)"
+              value={newAnswer}
+              onChangeText={setNewAnswer}
+            />
+            <ButtonC title="Add Question" onPress={handleAddQuestion} />
+          </View>
+        )}
+
         <View style={styles.modeSelectionContainer}>
           <Text style={styles.title}>Select Mode:</Text>
           <ButtonC title="Practice" onPress={() => setMode('practice')} buttonStyle={styles.button} />
@@ -129,7 +190,7 @@ const Theoretical = () => {
               <ButtonC title="False" onPress={() => handleAnswer(false)} buttonStyle={styles.answerButton} />
             </View>
           ) : (
-            <Text style={[styles.feedbackText, { color: theme.colors.primary }]}>
+            <Text style={[styles.feedbackText, { color: theme.colors.primary }]}> 
               {selectedAnswer === questions[currentIndex].raspuns ? 'Correct!' : 'Incorrect!'}
             </Text>
           )}
@@ -140,6 +201,13 @@ const Theoretical = () => {
 };
 
 const styles = StyleSheet.create({
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: wp(5),
+    marginTop: hp(2)
+  },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -154,6 +222,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+  },
+  addForm: {
+    paddingHorizontal: wp(5),
+    marginTop: hp(2),
+    gap: hp(1.25),
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    fontSize: wp(4),
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,

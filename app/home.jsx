@@ -1,11 +1,14 @@
 import { Pressable, StyleSheet, View, Text, Modal } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CircleButton from '../components/CircleButton';
 import Icon from '../assets/icons';
 import { theme } from '../constants/theme';
 import { hp, wp } from '../constants/common';
+import { auth } from '../lib/firebase';
+import { collection, query, where, getDocs, orderBy, updateDoc, doc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 const Home = ({ guest = false }) => {
   const router = useRouter();
@@ -19,12 +22,49 @@ const Home = ({ guest = false }) => {
     setModalVisible(!modalVisible);
   };
 
+  const markAsRead = async (id) => {
+    try {
+      await updateDoc(doc(db, 'messages', id), { read: true });
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+    } catch (err) {
+      console.error('Error marking notification as read:', err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const q = query(
+          collection(db, 'messages'),
+          where('userId', '==', user.uid),
+          orderBy('timestamp', 'desc')
+        );
+        const querySnapshot = await getDocs(q);
+        const messages = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setNotifications(messages);
+      } catch (err) {
+        console.error('Error fetching notifications:', err);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
   return (
     <ScreenWrapper>
       <View style={styles.container}>
         <View style={styles.iconContainer}>
           <Pressable onPress={toggleModal} style={styles.icon}>
             <Icon name="notification" size={wp(7.5)} color={theme.colors.dark} />
+            {notifications.some((n) => n.read === false) && (
+              <View style={styles.unreadBadge} />
+            )}
           </Pressable>
 
           <Pressable onPress={() => router.push({ pathname: 'profile', params: { guest: isGuest } })} style={styles.icon}>
@@ -34,7 +74,7 @@ const Home = ({ guest = false }) => {
 
         <View style={styles.buttonContainer}>
           <CircleButton title="Learn" onPress={() => router.push('learn')} />
-          <CircleButton title="Recogise Hands Signal" onPress={() => router.push('testHands')} />
+          <CircleButton title="Recognise Hands Signal" onPress={() => router.push('testHands')} />
           <CircleButton title="Practice Hands Signals" onPress={() => router.push('practice')} />
           <CircleButton title="Video Test" onPress={() => router.push('video')} />
           <CircleButton title="Theoretical Test" onPress={() => router.push('theoretical')} />
@@ -45,10 +85,16 @@ const Home = ({ guest = false }) => {
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Notifications</Text>
               {notifications.length > 0 ? (
-                notifications.map((notification, index) => (
-                  <Text key={index} style={styles.notificationText}>
-                    {notification}
-                  </Text>
+                notifications.map((notification) => (
+                  <View key={notification.id} style={{ marginBottom: 10, alignItems: 'center' }}>
+                    <Text style={styles.notificationText}>{notification.message}</Text>
+                    <Pressable
+                      onPress={() => markAsRead(notification.id)}
+                      style={styles.closeButton}
+                    >
+                      <Text style={styles.closeButtonText}>Mark as read</Text>
+                    </Pressable>
+                  </View>
                 ))
               ) : (
                 <Text style={styles.notificationText}>No new messages</Text>
@@ -111,17 +157,27 @@ const styles = StyleSheet.create({
     marginBottom: hp(0.625),
     color: theme.colors.text,
     fontWeight: theme.fonts.medium,
+    textAlign: 'center',
   },
   closeButton: {
-    marginTop: hp(2.5),
+    marginTop: hp(1),
     backgroundColor: theme.colors.primary,
-    paddingVertical: hp(1.25),
-    paddingHorizontal: wp(5),
+    paddingVertical: hp(1),
+    paddingHorizontal: wp(4),
     borderRadius: theme.radius.md,
   },
   closeButtonText: {
     color: '#fff',
     fontSize: wp(4),
     fontWeight: theme.fonts.bold,
+  },
+  unreadBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#FFA500',
   },
 });
