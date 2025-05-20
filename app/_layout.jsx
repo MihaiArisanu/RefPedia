@@ -22,7 +22,7 @@ const MainLayout = () => {
         if (user) {
             setAuth(user);
             updateUserData(user);
-            router.replace('/home'); 
+            router.replace('/home');
         } else {
             setAuth(null);
             router.replace('/welcome');
