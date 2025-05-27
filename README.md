@@ -1,8 +1,6 @@
-# ProjectHE 5.0---liceu
+# Project RefPedia
 
-Team: RefPedia
-
-Student: Arisanu Mihai
+Dev: Arisanu Mihai
 
 High school: Colegiul National "Mircea cel Batran", Rm. Valcea
 
