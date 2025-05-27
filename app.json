@@ -2,6 +2,7 @@
   "expo": {
     "name": "RefPedia",
     "slug": "RefPedia",
+    "icon": "assets/images/iconRefPedia.png",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "myapp",
@@ -13,11 +14,11 @@
       "infoPlist": {
         "NSCameraUsageDescription": "We need access to your camera to take photos."
       },
-      "bundleIdentifier": "com.mihai.arisanu.RefPedia"
+      "bundleIdentifier": "com.MihaiArisanu.RefPedia"
     },
     "android": {
       "googleServicesFile": "google-services.json",
-      "adaptiveIcon": {
+      "adaptiveIcon": { 
         "backgroundColor": "#ffffff"
       },
       "permissions": [
