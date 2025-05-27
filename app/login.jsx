@@ -28,8 +28,8 @@ import * as AuthSession from 'expo-auth-session';
     const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
   
     const [request, response, promptAsync] = Google.useAuthRequest({
-      iosClientId: '395377408799-7auq977j9ifkosoqrc6seictp2dopfj5.apps.googleusercontent.com',
-      webClientId: '395377408799-n1jerqm8an2nc650u1irsiu2uum5qr48.apps.googleusercontent.com',
+      iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_KEY,
+      webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_KEY,
       redirectUri,
     });
   

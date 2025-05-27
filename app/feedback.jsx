@@ -18,7 +18,7 @@ const Feedback = () => {
   const [content, setContent] = useState('');
   const [replyText, setReplyText] = useState({});
   const [showHidden, setShowHidden] = useState(false);
-  const [mode, setMode] = useState('user'); // 'user' | 'admin'
+  const [mode, setMode] = useState('user'); 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -114,7 +114,6 @@ const Feedback = () => {
       read: false,
     });
     Alert.alert('Success', 'Reply sent.');
-    // Keep reply in state after send
     setReplyText((prev) => ({ ...prev, [id]: reply }));
   };
 
