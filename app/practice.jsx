@@ -157,13 +157,13 @@ const Practice = () => {
   };
 
   if (!permission) {
-    return <View />;
+    return null;
   }
-
+  
   if (!permission.granted) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
+      <View style={styles.permissionContainer}>
+        <Text style={styles.permissionMessage}>We need your permission to show the camera</Text>
         <ButtonC title="Grant Permission" onPress={requestPermission} />
       </View>
     );
@@ -338,6 +338,18 @@ const styles = StyleSheet.create({
     borderRadius: wp(2),
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  permissionContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: wp(5),
+  },
+  permissionMessage: {
+    fontSize: wp(4.5),
+    color: theme.colors.text,
+    textAlign: 'center',
+    marginBottom: hp(2),
   },
   restartText: {
     fontSize: wp(5),

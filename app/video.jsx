@@ -182,7 +182,7 @@ const Learn = () => {
             </View>
             <View style={styles.inputContainer}>
               <Input
-                placeholder="Enter the answer"
+                placeholder="exemple: offensive foul, travel"
                 value={userAnswer}
                 onChangeText={setUserAnswer}
                 editable={!showExplanation}

@@ -68,7 +68,7 @@ const Profile = () => {
   };
 
   return (
-    <ScreenWrapper>
+    <ScreenWrapper style={{ flex: 1 }}>
       <View style={styles.header}>
         <BackButton onPress={onLogout} />
         {!isGuest && (
@@ -80,9 +80,15 @@ const Profile = () => {
 
       <View style={styles.form}>
         {isGuest ? (
-          <Pressable onPress={() => router.push('login')}>
-            <Text style={styles.text}>Autentifică-te pentru a accesa setările contului.</Text>
-          </Pressable>
+          <View style={styles.guestContainer}>
+            <Text style={styles.text}>
+              Please{' '}
+              <Text style={styles.loginLink} onPress={() => router.push('login')}>
+                Login
+              </Text>{' '}
+              to access your account settings.
+            </Text>
+          </View>
         ) : (
           <>
             <Input
@@ -131,6 +137,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius.sm,
   },
   form: {
+    flex: 1,
     width: '100%',
     gap: hp(1.875),
     marginTop: hp(1.25),
@@ -157,5 +164,16 @@ const styles = StyleSheet.create({
     top: '50%',
     transform: [{ translateY: -13 }],
     padding: 4,
+  },
+  guestContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: wp(5),
+  },
+  loginLink: {
+    color: theme.colors.primary,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
   },
 });

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, Alert } from 'react-native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackButton from '../components/BackButton';
-import Icon from '../assets/icons';
 import ButtonC from '../components/ButtonC';
 import { db, auth } from '../lib/firebase';
-import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc } from 'firebase/firestore';
 import { theme } from '../constants/theme';
 import { hp, wp } from '../constants/common';
 
@@ -23,9 +22,13 @@ const Theoretical = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeExpired, setTimeExpired] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [showAddForm, setShowAddForm] = useState(false);
   const [newQuestion, setNewQuestion] = useState('');
   const [newAnswer, setNewAnswer] = useState('');
+  const [editingQuestionId, setEditingQuestionId] = useState(null);
+  const [editedQuestion, setEditedQuestion] = useState('');
+  const [editedAnswer, setEditedAnswer] = useState('');
+  const [addError, setAddError] = useState('');
+  const [editError, setEditError] = useState('');
 
   const fetchData = async () => {
     const docs = await getDocs(collection(db, 'enunturi'));
@@ -67,7 +70,6 @@ const Theoretical = () => {
     if (questions.length === 0 || isFinished || selectedAnswer !== null) return;
 
     const currentQuestion = questions[currentIndex];
-
     setSelectedAnswer(userAnswer);
 
     if (userAnswer === currentQuestion.raspuns) {
@@ -97,7 +99,16 @@ const Theoretical = () => {
   };
 
   const handleAddQuestion = async () => {
-    if (!newQuestion.trim() || !newAnswer.trim()) return;
+    if (!newQuestion.trim() || !newAnswer.trim()) {
+      setAddError('Completează toate câmpurile.');
+      return;
+    }
+
+    if (newAnswer !== 'true' && newAnswer !== 'false') {
+      setAddError('Răspunsul trebuie să fie "true" sau "false".');
+      return;
+    }
+
     try {
       await addDoc(collection(db, 'enunturi'), {
         enunt: newQuestion.trim(),
@@ -105,49 +116,154 @@ const Theoretical = () => {
       });
       setNewQuestion('');
       setNewAnswer('');
-      setShowAddForm(false);
+      setAddError('');
       await fetchData();
     } catch (err) {
       console.error('Error adding question:', err);
+      setAddError('A apărut o eroare la salvare.');
     }
   };
 
+  const handleDeleteQuestion = async (id) => {
+    Alert.alert('Confirmare', 'Ești sigur că vrei să ștergi această întrebare?', [
+      { text: 'Anulează', style: 'cancel' },
+      {
+        text: 'Șterge', style: 'destructive', onPress: async () => {
+          try {
+            await deleteDoc(doc(db, 'enunturi', id));
+            await fetchData();
+          } catch (err) {
+            console.error('Error deleting question:', err);
+          }
+        }
+      }
+    ]);
+  };
+
+  const handleUpdateQuestion = async (id) => {
+    if (!editedQuestion.trim() || !editedAnswer.trim()) {
+      setEditError('Completează toate câmpurile.');
+      return;
+    }
+
+    if (editedAnswer !== 'true' && editedAnswer !== 'false') {
+      setEditError('The answer must be true or false.');
+      return;
+    }
+
+    try {
+      await updateDoc(doc(db, 'enunturi', id), {
+        enunt: editedQuestion,
+        raspuns: editedAnswer === 'true'
+      });
+      setEditingQuestionId(null);
+      setEditError('');
+      await fetchData();
+    } catch (err) {
+      console.error('Error updating question:', err);
+      setEditError('A apărut o eroare la actualizare.');
+    }
+  };
   if (!mode) {
     return (
       <ScreenWrapper>
-        <View style={styles.headerRow}>
-          <BackButton />
-          {isAdmin && (
-            <Pressable onPress={() => setShowAddForm(!showAddForm)}>
-              <Icon name="plus" size={24} color={theme.colors.primary} />
-            </Pressable>
-          )}
-        </View>
-
-        {showAddForm && (
-          <View style={styles.addForm}>
-            <TextInput
-              style={styles.input}
-              placeholder="Question"
-              value={newQuestion}
-              onChangeText={setNewQuestion}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Answer (true/false)"
-              value={newAnswer}
-              onChangeText={setNewAnswer}
-            />
-            <ButtonC title="Add Question" onPress={handleAddQuestion} />
-          </View>
-        )}
-
+        <BackButton />
         <View style={styles.modeSelectionContainer}>
           <Text style={styles.title}>Select Mode:</Text>
           <ButtonC title="Practice" onPress={() => setMode('practice')} buttonStyle={styles.button} />
           <View style={{ height: hp(2) }} />
           <ButtonC title="Exam" onPress={() => setMode('exam')} buttonStyle={styles.button} />
+          {isAdmin && (
+            <>
+              <View style={{ height: hp(2) }} />
+              <ButtonC title="Add questions" onPress={() => setMode('add')} buttonStyle={styles.button} />
+              <View style={{ height: hp(2) }} />
+              <ButtonC title="View questions" onPress={() => setMode('view')} buttonStyle={styles.button} />
+            </>
+          )}
         </View>
+      </ScreenWrapper>
+    );
+  }
+
+  if (mode === 'add') {
+    return (
+      <ScreenWrapper>
+        <BackButton onPress={() => setMode(null)} />
+        <View style={styles.addForm}>
+          <Text style={styles.title}>Add New Question</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Question"
+            value={newQuestion}
+            onChangeText={setNewQuestion}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder='Answer (true/false)'
+            value={newAnswer}
+            onChangeText={setNewAnswer}
+          />
+          {addError ? <Text style={styles.errorText}>{addError}</Text> : null}
+          <ButtonC title="Save" onPress={handleAddQuestion} />
+        </View>
+      </ScreenWrapper>
+    );
+  }
+
+  if (mode === 'view') {
+    return (
+      <ScreenWrapper>
+        <BackButton onPress={() => setMode(null)} />
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Text style={styles.title}>All Questions</Text>
+          {questions.map((q) => (
+            <View key={q.id} style={styles.questionCard}>
+              {editingQuestionId === q.id ? (
+                <>
+                  <TextInput
+                    style={styles.input}
+                    value={editedQuestion}
+                    onChangeText={setEditedQuestion}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    value={editedAnswer}
+                    onChangeText={setEditedAnswer}
+                    placeholder="Answer (true/false)"
+                  />
+                  {editError && <Text style={styles.errorText}>{editError}</Text>}
+                  <View style={{ flexDirection: 'row', gap: wp(2), marginTop: 10 }}>
+                    <ButtonC title="Save" onPress={() => handleUpdateQuestion(q.id)} buttonStyle={styles.answerButton} />
+                    <ButtonC title="Cancel" onPress={() => { setEditingQuestionId(null); setEditError(''); }} buttonStyle={styles.answerButton} />
+                  </View>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.questionText}>{q.enunt}</Text>
+                  <Text>Answer: {q.raspuns ? 'true' : 'false'}</Text>
+                  <View style={{ flexDirection: 'row', gap: wp(2), marginTop: 10 }}>
+                    <ButtonC
+                      title="Edit"
+                      onPress={() => {
+                        setEditingQuestionId(q.id);
+                        setEditedQuestion(q.enunt);
+                        setEditedAnswer(q.raspuns ? 'true' : 'false');
+                        setEditError('');
+                      }}
+                      buttonStyle={styles.answerButton}
+                    />
+                    <ButtonC
+                      title="Delete"
+                      onPress={() => handleDeleteQuestion(q.id)}
+                      buttonStyle={styles.answerButton}
+                    />
+                  </View>
+                </>
+              )}
+            </View>
+          ))}
+        </ScrollView>
       </ScreenWrapper>
     );
   }
@@ -190,7 +306,7 @@ const Theoretical = () => {
               <ButtonC title="False" onPress={() => handleAnswer(false)} buttonStyle={styles.answerButton} />
             </View>
           ) : (
-            <Text style={[styles.feedbackText, { color: theme.colors.primary }]}> 
+            <Text style={[styles.feedbackText, { color: theme.colors.primary }]}>
               {selectedAnswer === questions[currentIndex].raspuns ? 'Correct!' : 'Incorrect!'}
             </Text>
           )}
@@ -201,12 +317,8 @@ const Theoretical = () => {
 };
 
 const styles = StyleSheet.create({
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: wp(5),
-    marginTop: hp(2)
+  answerButton: {
+    width: '48%',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -224,9 +336,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   addForm: {
+    flex: 1,
+    justifyContent: 'center',
     paddingHorizontal: wp(5),
-    marginTop: hp(2),
-    gap: hp(1.25),
+    gap: hp(1.5),
   },
   input: {
     borderWidth: 1,
@@ -236,15 +349,22 @@ const styles = StyleSheet.create({
     fontSize: wp(4),
     backgroundColor: '#fff',
   },
+  errorText: {
+    color: 'red',
+    fontSize: wp(3.5),
+    marginBottom: 8,
+    textAlign: 'center',
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
   },
   questionText: {
     fontSize: 18,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   feedbackText: {
     fontSize: 20,
@@ -289,6 +409,15 @@ const styles = StyleSheet.create({
   tryAgainButton: {
     marginTop: 20,
     width: '60%',
+  },
+  questionCard: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    backgroundColor: '#f9f9f9',
+    width: '100%',
   },
 });
 
